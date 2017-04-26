@@ -3,12 +3,15 @@
 ##############################################################################
 library(RColorBrewer)
 
+#' export
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
   "#0072B2", "#D55E00", "#e7baea")
-
+#' export
 iwhPalette <- c("#cd5431", "#a14ad9", "#67b03f", "#604dad", "#c79931",
   "#cc4498", "#4d9f83", "#b54f50", "#5d8cb6", "#7f7d48", "#a67abe", "#965571")
+#' export
 myPaletteCat <- colorRampPalette(brewer.pal(12, "Paired"))
+#' export
 myPaletteCatN <- colorRampPalette(rev(brewer.pal(8, "Dark2")), space="Lab")
 myPalette <- colorRampPalette(rev(brewer.pal(11, "Spectral")), space="Lab")
 myPaletteB <- colorRampPalette(rev(brewer.pal(9, "Blues")), space="Lab")
