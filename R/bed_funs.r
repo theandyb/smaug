@@ -151,7 +151,7 @@ repCol <- function(sites, repfile){
       verbose=FALSE) %>%
     dplyr::select(CHR, POS=END, TIME) %>%
     mutate(CHR=as.numeric(gsub("chr", "", CHR)),
-      rate=as.numeric(TIME)) %>%
+      TIME=as.numeric(TIME)) %>%
     arrange(CHR, POS)
 
   return(tmp$TIME)
