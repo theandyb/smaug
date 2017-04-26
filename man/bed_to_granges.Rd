@@ -17,6 +17,10 @@ The tab-delimited file must be ordered as 'chr', 'start', 'end', 'id', 'score', 
 The minimal BED file must have the 'chr', 'start', 'end' columns.
 Any columns after the strand column are ignored.
 }
+\details{
+This is a forked version of the function written by Dave Tang
+(https://github.com/davetang/bedr), with added support for bed files with headers
+}
 \examples{
 bed_to_granges('my_bed_file.bed')
 }

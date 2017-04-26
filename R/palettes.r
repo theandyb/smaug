@@ -53,3 +53,8 @@ cols <- myPaletteCat(12)[
   c(10,8,12,
     2,4,6,
     1,3,5)] #<- colors if using this ordering
+
+# cols returns following color list:
+# "#6A3D9A" "#FF7F00" "#B15928" # A>N
+# "#1F78B4" "#33A02C" "#E31A1C" # C>N (non-CpG)
+# "#A6CEE3" "#B2DF8A" "#FB9A99" # CpG>NpG
