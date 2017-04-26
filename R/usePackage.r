@@ -15,6 +15,6 @@ usePackage <- function(package) {
     install.packages(package, dep = TRUE)
 		require(package, character.only = TRUE)
 	} else {
-		require(p, character.only = TRUE)
+		require(package, character.only = TRUE)
 	}
 }
