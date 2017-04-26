@@ -7,5 +7,6 @@ Depends: R (>= 3.1.2)
 License: Free
 LazyData: true
 Imports:
-    tidyverse
+    tidyverse,
+    RColorBrewer
 RoxygenNote: 6.0.1
