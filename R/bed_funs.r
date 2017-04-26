@@ -52,6 +52,7 @@ bed_to_granges <- function(file, header){
 
 ##############################################################################
 # Get recombination rate at each site
+#' @export
 ##############################################################################
 rcrCol <- function(sites, file){
   feat_ranges <- bed_to_granges(file, header=T)
@@ -74,6 +75,7 @@ rcrCol <- function(sites, file){
 
 ##############################################################################
 # Get replication timing rate for each site
+#' @export
 ##############################################################################
 repCol <- function(sites, repfile, binwidth){
   reptime <- read.table(repfile, header=F, stringsAsFactors=F, sep="\t")
@@ -106,6 +108,7 @@ repCol <- function(sites, repfile, binwidth){
 
 ##############################################################################
 # Check if site in bed file; returns 0 or 1
+#' @export
 ##############################################################################
 binaryCol <- function(sites, bedfile){
   feat_ranges <- bed_to_granges(bedfile, header=F)
@@ -116,6 +119,7 @@ binaryCol <- function(sites, bedfile){
 
 ##############################################################################
 # Get GC content in 10kb window (fix to sliding?)
+#' @export
 ##############################################################################
 gcCol <- function(sites, gcfile){
 
@@ -145,6 +149,7 @@ gcCol <- function(sites, gcfile){
 
 ##############################################################################
 # Function determines start of interval from value in previous row
+#' @export
 ##############################################################################
 imputeStart <- function(ends){
   starts<-c(0, ends[-(length(ends))])

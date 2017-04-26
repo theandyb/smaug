@@ -1,5 +1,6 @@
 ##############################################################################
 # Function to get reverse complement
+#' @export
 ##############################################################################
 revcomp <- function(DNAstr) {
 	step1 <- chartr("ACGT","TGCA",DNAstr)
@@ -12,6 +13,7 @@ revcomp <- function(DNAstr) {
 ##############################################################################
 # Function to reverse sequence--used to correctly plot right flank in
 # subsequence heatmaps
+#' @export
 ##############################################################################
 reverse_chars <- function(string){
 	string_split = strsplit(as.character(string), split = "")

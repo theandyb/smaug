@@ -1,5 +1,6 @@
 ##############################################################################
 # Function for plotting K-mer heatmaps
+#' @export
 ##############################################################################
 rrheat2 <- function(dat, adj){
 
@@ -57,6 +58,7 @@ rrheat2 <- function(dat, adj){
 
 ##############################################################################
 # Plot relative differences between ERVs and AV rates
+#' @export
 ##############################################################################
 rrheat3 <- function(dat){
 	p<-ggplot()+
@@ -86,6 +88,7 @@ rrheat3 <- function(dat){
 
 ##############################################################################
 # Display plot with inset
+#' @export
 ##############################################################################
 insetPlot <- function(main, inset, loc) {
 	 print(main)
@@ -104,8 +107,9 @@ insetPlot <- function(main, inset, loc) {
  # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
  # then plot 1 will go in the upper left, 2 will go in the upper right, and
  # 3 will go all the way across the bottom.
+ #' @export
  ##############################################################################
- multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
    library(grid)
 
    # Make a list from the ... arguments and plotlist
