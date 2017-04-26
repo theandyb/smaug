@@ -8,6 +8,6 @@ License: Free
 LazyData: true
 Imports:
     tidyverse,
-    RColorBrewer
+    RColorBrewer,
     bedr
 RoxygenNote: 6.0.1
