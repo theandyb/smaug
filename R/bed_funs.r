@@ -57,55 +57,123 @@ bed_to_granges <- function(file, header){
 # Get recombination rate at each site
 #' @export
 ##############################################################################
-rcrCol <- function(sites, file){
-  feat_ranges <- bed_to_granges(file, header=T)
-  site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-                         ranges=IRanges(start=sites$POS, end=sites$POS))
+rcrCol <- function(sites, rcrfile){
+  rcr <- read.table(rcrfile, header=T, stringsAsFactors=F)
+  names(rcr) <- c("CHROM", "s", "e", "rate")
+  rcr$CHROM <- as.character(rcr$CHROM)
+  rcr <- bedr.sort.region(rcr,
+    check.chr=FALSE,
+    check.merge=FALSE,
+    check.zero.based=FALSE,
+    check.valid=FALSE,
+    verbose=FALSE)
 
-  indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  indices[is.na(indices)] <- 0
-  ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
+  site_ranges <- sites %>%
+    mutate(CHR=paste0("chr", CHR), START=POS-1, END=POS) %>%
+    dplyr::select(CHR, START, END)
 
-  feat_df <- as.data.frame(feat_ranges)
-  feat_df$indices <- seq_along(1:nrow(feat_df))
-  rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  site_ranges <- bedr.sort.region(site_ranges,
+    check.chr=FALSE,
+    check.merge=FALSE,
+    check.zero.based=FALSE,
+    check.valid=FALSE,
+    verbose=FALSE)
+  tmp <- bedr.join.region(site_ranges, rcr,
+      check.chr=FALSE,
+      check.merge=FALSE,
+      check.zero.based=FALSE,
+      check.sort=FALSE,
+      check.valid=FALSE,
+      verbose=FALSE) %>%
+    dplyr::select(CHR, POS=END, rate) %>%
+    mutate(CHR=as.numeric(gsub("chr", "", CHR)),
+      rate=as.numeric(rate)) %>%
     arrange(CHR, POS)
 
-  rates <- rate_table$id
-  # rates[is.na(rates)]<-0
-  return(as.numeric(rates))
+  return(tmp$rate)
+
+  # feat_ranges <- bed_to_granges(file, header=T)
+  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
+  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
+  #
+  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
+  # indices[is.na(indices)] <- 0
+  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
+  #
+  # feat_df <- as.data.frame(feat_ranges)
+  # feat_df$indices <- seq_along(1:nrow(feat_df))
+  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  #   arrange(CHR, POS)
+  #
+  # rates <- rate_table$id
+  # # rates[is.na(rates)]<-0
+  # return(as.numeric(rates))
 }
 
 ##############################################################################
 # Get replication timing rate for each site
 #' @export
 ##############################################################################
-repCol <- function(sites, repfile, binwidth){
+repCol <- function(sites, repfile){
   reptime <- read.table(repfile, header=F, stringsAsFactors=F, sep="\t")
   names(reptime) <- c("CHR", "END", "TIME")
-  reptime2 <- reptime %>%
-    group_by(CHR) %>%
+  reptime <- reptime %>%
+    filter(CHR<=22) %>%
+    # group_by(CHR) %>%
     arrange(CHR, END) %>%
-    mutate(START=imputeStart(END))
+    mutate(CHR=paste0("chr", CHR), START=imputeStart(END)) %>%
+    mutate(START=ifelse(START>END, 0, START)) %>%
+    dplyr::select(CHROM=CHR, s=START, e=END, TIME)
 
-  feat_ranges <- GRanges(seqnames=paste0("chr",reptime2$CHR),
-                         ranges=IRanges(start=reptime2$START, end=reptime2$END),
-												 id=reptime2$TIME)
-  site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-                         ranges=IRanges(start=sites$POS, end=sites$POS))
+  reptime <- bedr.sort.region(reptime,
+    check.chr=FALSE,
+    check.merge=FALSE,
+    check.zero.based=FALSE,
+    check.valid=FALSE,
+    verbose=FALSE)
 
-  indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  indices[is.na(indices)] <- 0
-  ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
+  site_ranges <- sites %>%
+    mutate(CHR=paste0("chr", CHR), START=POS-1, END=POS) %>%
+    dplyr::select(CHR, START, END)
 
-  feat_df <- as.data.frame(feat_ranges)
-  feat_df$indices <- seq_along(1:nrow(feat_df))
-  rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  site_ranges <- bedr.sort.region(site_ranges,
+    check.chr=FALSE,
+    check.merge=FALSE,
+    check.zero.based=FALSE,
+    check.valid=FALSE,
+    verbose=FALSE)
+  tmp <- bedr.join.region(site_ranges, reptime,
+      check.chr=FALSE,
+      check.merge=FALSE,
+      check.zero.based=FALSE,
+      check.sort=FALSE,
+      check.valid=FALSE,
+      verbose=FALSE) %>%
+    dplyr::select(CHR, POS=END, TIME) %>%
+    mutate(CHR=as.numeric(gsub("chr", "", CHR)),
+      rate=as.numeric(TIME)) %>%
     arrange(CHR, POS)
 
-  rates <- rate_table$id
-  rates[is.na(rates)] <- 0
-  return(as.numeric(rates))
+  return(tmp$TIME)
+
+  # feat_ranges <- GRanges(seqnames=paste0("chr",reptime2$CHR),
+  #                        ranges=IRanges(start=reptime2$START, end=reptime2$END),
+	# 											 id=reptime2$TIME)
+  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
+  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
+  #
+  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
+  # indices[is.na(indices)] <- 0
+  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
+  #
+  # feat_df <- as.data.frame(feat_ranges)
+  # feat_df$indices <- seq_along(1:nrow(feat_df))
+  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  #   arrange(CHR, POS)
+  #
+  # rates <- rate_table$id
+  # rates[is.na(rates)] <- 0
+  # return(as.numeric(rates))
   # return(as.integer(site_ranges %within% feat_ranges))
 }
 
@@ -126,27 +194,36 @@ binaryCol <- function(sites, bedfile){
 ##############################################################################
 gcCol <- function(sites, gcfile){
 
-  gcbins <- read.table(gcfile, header=T, stringsAsFactors=F)
+  gcbins <- read.table(gcfile, header=F, stringsAsFactors=F)
   names(gcbins) <- c("CHR", "start", "end", "prop_GC")
+  gcbins$CHR <- as.character(gcbins$CHR)
+  site_tmp <- sites %>%
+    dplyr::select(CHR, POS) %>%
+    mutate(start=floor(POS/10000)*10000, end=ceiling(POS/10000)*10000)
 
-  feat_ranges <- GRanges(seqnames=paste0("chr",gcbins$CHR),
-                         ranges=IRanges(start=gcbins$start, end=gcbins$end),
-												 id=gcbins$prop_GC)
-  site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-                         ranges=IRanges(start=sites$POS, end=sites$POS))
-
-  indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  indices[is.na(indices)]<-0
-  ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
-
-  feat_df <- as.data.frame(feat_ranges)
-  feat_df$indices <- seq_along(1:nrow(feat_df))
-  rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  out1 <- merge(site_tmp, gcbins, by=c("CHR", "start")) %>%
     arrange(CHR, POS)
+  # out2 <- merge(site_tmp, gcbins, by=c(CHR, end))
+  return(out1$prop_GC)
 
-  rates <- rate_table$id
-  rates[is.na(rates)] <- 0
-  return(as.numeric(rates))
+  # feat_ranges <- GRanges(seqnames=paste0("chr",gcbins$CHR),
+  #                        ranges=IRanges(start=gcbins$start, end=gcbins$end),
+	# 											 id=gcbins$prop_GC)
+  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
+  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
+  #
+  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
+  # indices[is.na(indices)]<-0
+  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
+  #
+  # feat_df <- as.data.frame(feat_ranges)
+  # feat_df$indices <- seq_along(1:nrow(feat_df))
+  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
+  #   arrange(CHR, POS)
+  #
+  # rates <- rate_table$id
+  # rates[is.na(rates)] <- 0
+  # return(as.numeric(rates))
   # return(as.integer(site_ranges %within% feat_ranges))
 }
 
