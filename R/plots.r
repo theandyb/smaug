@@ -5,7 +5,7 @@
 rrheat2 <- function(dat, adj){
 
   plotdat <- dat %>%
-  plotdat <- gpdat[gpdat$Category==categ,] %>%
+  # plotdat <- gpdat[gpdat$Category==categ,] %>%
     mutate(v2=substr(Motif,1,adj),
       v2a=factor(as.character(lapply(as.vector(v2), reverse_chars))),
       v3=substr(Motif, adj+2, adj*2+1),

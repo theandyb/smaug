@@ -6,6 +6,9 @@
 #' The minimal BED file must have the 'chr', 'start', 'end' columns.
 #' Any columns after the strand column are ignored.
 #'
+#' This is a forked version of the function written by Dave Tang
+#' (https://github.com/davetang/bedr), with added support for bed files with headers
+#'
 #' @param file Location of your file
 #' @param header logical; indicates whether or not bed file has a header
 #' @keywords BED GRanges
