@@ -45,14 +45,11 @@ getData <- function(summfile, singfile, bindir){
   bins <- get_bins(bindir, p1)
   mct <- get_mct(bins)
 
-  cat("Calculating K-mer rates...\n")
-  aggseq <- get_aggseq(sites, mct)
-
   out <- list()
   out$sites <- sites
   out$bins <- bins
   out$mct <- mct
-  out$aggseq <- aggseq
+
   return(out)
 }
 
