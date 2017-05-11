@@ -49,7 +49,7 @@ orderedcats2 <- c("A>G", "A>C", "A>T",
   "C>T (non-CpG)", "C>A (non-CpG)", "C>G (non-CpG)",
   "CpG>TpG", "CpG>ApG", "CpG>GpG")
 #' @export
-cols <- myPaletteCat(12)[
+gp_cols <- myPaletteCat(12)[
   c(10,8,12,
     2,4,6,
     1,3,5)] #<- colors if using this ordering
