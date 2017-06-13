@@ -117,7 +117,7 @@ rcrCol <- function(sites, rcrfile){
 repCol <- function(sites, repfile){
   reptime <- read.table(repfile, header=F, stringsAsFactors=F, sep="\t")
   names(reptime) <- c("CHR", "END", "TIME")
-  reptime <- reptime %>%
+  reptime <- reptime[!duplicated(reptime[,1:2]),] %>%
     filter(CHR<=22) %>%
     # group_by(CHR) %>%
     arrange(CHR, END) %>%
