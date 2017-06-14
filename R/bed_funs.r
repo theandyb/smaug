@@ -182,7 +182,7 @@ repCol <- function(sites, repfile){
 binaryCol <- function(sites, bedfile){
   feat_ranges <- bed_to_granges(bedfile, header=F)
   site_ranges <- GenomicRanges::GRanges(seqnames=paste0("chr",sites$CHR),
-                         ranges=IRanges(start=sites$POS, end=sites$POS))
+                         ranges=IRanges::IRanges(start=sites$POS, end=sites$POS))
   return(as.integer(site_ranges %within% feat_ranges))
 }
 
