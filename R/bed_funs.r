@@ -39,13 +39,13 @@ bed_to_granges <- function(file, header){
    }
 
    if(length(df)==3){
-      gr <- with(df, GRanges(chr, IRanges(start, end)))
+      gr <- with(df, GenomicRanges::GRanges(chr, GenomicRanges::IRanges(start, end)))
    } else if (length(df)==4){
-      gr <- with(df, GRanges(chr, IRanges(start, end), id=id))
+      gr <- with(df, GenomicRanges::GRanges(chr, GenomicRanges::IRanges(start, end), id=id))
    } else if (length(df)==5){
-      gr <- with(df, GRanges(chr, IRanges(start, end), id=id, score=score))
+      gr <- with(df, GenomicRanges::GRanges(chr, GenomicRanges::IRanges(start, end), id=id, score=score))
    } else if (length(df)==6){
-      gr <- with(df, GRanges(chr, IRanges(start, end), id=id, score=score, strand=strand))
+      gr <- with(df, GenomicRanges::GRanges(chr, GenomicRanges::IRanges(start, end), id=id, score=score, strand=strand))
    }
    return(gr)
 }
