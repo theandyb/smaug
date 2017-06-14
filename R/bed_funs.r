@@ -38,8 +38,6 @@ bed_to_granges <- function(file, header){
       df$strand <- gsub(pattern="[^+-]+", replacement = '*', x = df$strand)
    }
 
-   library("GenomicRanges")
-
    if(length(df)==3){
       gr <- with(df, GRanges(chr, IRanges(start, end)))
    } else if (length(df)==4){
