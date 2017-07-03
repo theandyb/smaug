@@ -17,8 +17,7 @@
 #' bed_to_granges('my_bed_file.bed')
 ##############################################################################
 
-bed_to_granges <- function(file, header){
-  hd<-header
+bed_to_granges <- function(file, hd=FALSE){
    df <- read.table(file,
                     header=hd,
                     stringsAsFactors=F)
