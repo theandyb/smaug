@@ -1,1 +1,0 @@
-Search.setIndex({docnames:["index"],envversion:52,filenames:["index.rst"],objects:{},objnames:{},objtypes:{},terms:{"function":0,custom:0,genet:0,index:[],modul:[],page:[],search:[]},titles:["smaug"],titleterms:{document:[],indic:[],smaug:0,tabl:[],welcom:[]}})
