@@ -41,21 +41,21 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-# source_suffix = '.rst'
+source_suffix = '.rst'
 
-from recommonmark.parser import CommonMarkParser
-
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-
-source_suffix = ['.rst', '.md']
+# from recommonmark.parser import CommonMarkParser
+#
+# source_parsers = {
+#     '.md': CommonMarkParser,
+# }
+#
+# source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = u'smaug'
+# project = u'smaug'
 copyright = u'2017, Jedidiah Carlson'
 author = u'Jedidiah Carlson'
 
@@ -110,16 +110,23 @@ html_static_path = ['_static']
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
-    ]
-}
+# html_sidebars = {
+#     '**': [
+#         'about.html',
+#         'navigation.html',
+#         'relations.html',  # needs 'show_related': True theme option to display
+#         'searchbox.html',
+#         'donate.html',
+#     ]
+# }
 
+html_theme_options = {
+    'show_powered_by': False,
+    'github_user': 'carjed',
+    'github_repo': 'smaug',
+    'github_banner': True,
+    'show_related': False
+}
 
 # -- Options for HTMLHelp output ------------------------------------------
 
