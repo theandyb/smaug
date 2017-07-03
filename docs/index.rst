@@ -7,3 +7,6 @@ smaug
 ======
 
 custom functions for smaug-genetics
+
+.. toctree::
+  :maxdepth: 1
