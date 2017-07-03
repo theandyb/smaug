@@ -9,4 +9,6 @@ smaug
 custom functions for smaug-genetics
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 2
+
+   intro
