@@ -179,7 +179,7 @@ repCol <- function(sites, repfile){
 #' @export
 ##############################################################################
 binaryCol <- function(sites, bedfile){
-  feat_ranges <- bed_to_granges(bedfile, header=F)
+  feat_ranges <- bed_to_granges(bedfile, hd=F)
   site_ranges <- GenomicRanges::GRanges(seqnames=paste0("chr",sites$CHR),
                          ranges=IRanges::IRanges(start=sites$POS, end=sites$POS))
   out <- GenomicRanges::findOverlaps(site_ranges, feat_ranges, type="within", select="first")

@@ -35,8 +35,10 @@ rrheat2 <- function(dat, adj){
 		# colours=myPalette((nbp-1)^4),
     colours=myPaletteO(11),
 		trans="log10",
-		breaks=10^(seq(-3.65,-.84,0.281)),
-		labels=signif(10^(seq(-3.65,-.84,0.281)), 2),
+		# breaks=10^(seq(-3.65,-.84,0.281)),
+    breaks=0.0003*2^(0:9),
+		# labels=signif(10^(seq(-3.65,-.84,0.281)), 2),
+    labels=0.0003*2^(0:9),
 		limits=c(0.0002, 0.2))+
 	xlab("3' flank")+
 	ylab("5' flank")+
