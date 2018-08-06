@@ -27,7 +27,7 @@ getData <- function(summfile, singfile, bindir){
   sites$Category <- gsub("cpg_", "", sites$Category)
   sites$BIN <- ceiling(sites$POS/binw)
   sites$MASK <- binaryCol(sites,
-    paste0(parentdir, "/reference_data/testmask2.bed"))
+    paste0(analysisdir, "/reference_data/testmask2.bed"))
 
   if(!missing(singfile)){
     cat("Annotating with sample ID...\n")
