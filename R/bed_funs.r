@@ -194,7 +194,7 @@ binaryCol <- function(sites, bedfile){
 ##############################################################################
 gcCol <- function(sites, gcfile){
 
-  gcbins <- read.table(gcfile, header=F, stringsAsFactors=F)
+  gcbins <- read.table(gcfile, header=F, stringsAsFactors=F)[,1:4]
   names(gcbins) <- c("CHR", "start", "end", "prop_GC")
   gcbins$CHR <- as.character(gcbins$CHR)
   site_tmp <- sites %>%
