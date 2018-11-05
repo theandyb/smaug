@@ -13,7 +13,7 @@
 #' getdata("sites.txt", "sites_id.txt", "/path/to/motif_counts")
 #' @author Jed Carlson
 ##############################################################################
-getData <- function(summfile, singfile, bindir){
+getData <- function(summfile, singfile, bindir, maskfile, binw){
 
   if(!file.exists(summfile)){
     msg <- paste0("Summary file ", summfile, " does not exist.\n")
@@ -26,8 +26,7 @@ getData <- function(summfile, singfile, bindir){
   sites$Category2 <- sites$Category
   sites$Category <- gsub("cpg_", "", sites$Category)
   sites$BIN <- ceiling(sites$POS/binw)
-  sites$MASK <- binaryCol(sites,
-    paste0(analysisdir, "/reference_data/testmask2.bed"))
+  sites$MASK <- binaryCol(sites, maskfile)
 
   if(!missing(singfile)){
     cat("Annotating with sample ID...\n")
