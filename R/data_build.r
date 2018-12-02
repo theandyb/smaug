@@ -22,7 +22,7 @@ getData <- function(summfile, singfile, bindir){
 
   # Read in per-site summary data
   cat("Reading summary file:", summfile, "...\n")
-  sites <- read.table(summfile, header=T, stringsAsFactors=F)
+  sites <- read_tsv(summfile)
   sites$Category2 <- sites$Category
   sites$Category <- gsub("cpg_", "", sites$Category)
   sites$BIN <- ceiling(sites$POS/binw)
@@ -31,7 +31,7 @@ getData <- function(summfile, singfile, bindir){
 
   if(!missing(singfile)){
     cat("Annotating with sample ID...\n")
-    inds <- read.table(singfile, header=T, stringsAsFactors=F)
+    inds <- read_tsv(singfile)
     names(inds) <- c("CHR", "POS", "S", "ALT", "ID")
     sites <- merge(sites, inds, by=c("CHR", "POS", "ALT"))
   } else {
