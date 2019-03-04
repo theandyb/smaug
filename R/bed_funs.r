@@ -18,35 +18,35 @@
 ##############################################################################
 
 bed_to_granges <- function(file, hd=FALSE){
-   df <- read.table(file,
-                    header=hd,
-                    stringsAsFactors=F)
-
-   if(length(df) > 6){
-      df <- df[,-c(7:length(df))]
-   }
-
-   if(length(df)<3){
-      stop("File has less than 3 columns")
-   }
-
-   header <- c('chr','start','end','id','score','strand')
-   names(df) <- header[1:length(names(df))]
-
-   if('strand' %in% colnames(df)){
-      df$strand <- gsub(pattern="[^+-]+", replacement = '*', x = df$strand)
-   }
-
-   if(length(df)==3){
-      gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end)))
-   } else if (length(df)==4){
-      gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id))
-   } else if (length(df)==5){
-      gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score))
-   } else if (length(df)==6){
-      gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score, strand=strand))
-   }
-   return(gr)
+  df <- read.table(file,
+                   header=hd,
+                   stringsAsFactors=F)
+  
+  if(length(df) > 6){
+    df <- df[,-c(7:length(df))]
+  }
+  
+  if(length(df)<3){
+    stop("File has less than 3 columns")
+  }
+  
+  header <- c('chr','start','end','id','score','strand')
+  names(df) <- header[1:length(names(df))]
+  
+  if('strand' %in% colnames(df)){
+    df$strand <- gsub(pattern="[^+-]+", replacement = '*', x = df$strand)
+  }
+  
+  if(length(df)==3){
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end)))
+  } else if (length(df)==4){
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id))
+  } else if (length(df)==5){
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score))
+  } else if (length(df)==6){
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score, strand=strand))
+  }
+  return(gr)
 }
 
 
@@ -59,36 +59,36 @@ rcrCol <- function(sites, rcrfile){
   names(rcr) <- c("CHROM", "s", "e", "rate")
   rcr$CHROM <- as.character(rcr$CHROM)
   rcr <- bedr.sort.region(rcr,
-    check.chr=FALSE,
-    check.merge=FALSE,
-    check.zero.based=FALSE,
-    check.valid=FALSE,
-    verbose=FALSE)
-
+                          check.chr=FALSE,
+                          check.merge=FALSE,
+                          check.zero.based=FALSE,
+                          check.valid=FALSE,
+                          verbose=FALSE)
+  
   site_ranges <- sites %>%
     mutate(CHR=paste0("chr", CHR), START=POS-1, END=POS) %>%
     dplyr::select(CHR, START, END)
-
+  
   site_ranges <- bedr.sort.region(site_ranges,
-    check.chr=FALSE,
-    check.merge=FALSE,
-    check.zero.based=FALSE,
-    check.valid=FALSE,
-    verbose=FALSE)
+                                  check.chr=FALSE,
+                                  check.merge=FALSE,
+                                  check.zero.based=FALSE,
+                                  check.valid=FALSE,
+                                  verbose=FALSE)
   tmp <- bedr.join.region(site_ranges, rcr,
-      check.chr=FALSE,
-      check.merge=FALSE,
-      check.zero.based=FALSE,
-      check.sort=FALSE,
-      check.valid=FALSE,
-      verbose=FALSE) %>%
+                          check.chr=FALSE,
+                          check.merge=FALSE,
+                          check.zero.based=FALSE,
+                          check.sort=FALSE,
+                          check.valid=FALSE,
+                          verbose=FALSE) %>%
     dplyr::select(CHR, POS=END, rate) %>%
     mutate(CHR=as.numeric(gsub("chr", "", CHR)),
-      rate=as.numeric(rate)) %>%
+           rate=as.numeric(rate)) %>%
     arrange(CHR, POS)
-
+  
   return(tmp$rate)
-
+  
   # feat_ranges <- bed_to_granges(file, header=T)
   # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
   #                        ranges=IRanges(start=sites$POS, end=sites$POS))
@@ -121,41 +121,41 @@ repCol <- function(sites, repfile){
     mutate(CHR=paste0("chr", CHR), START=imputeStart(END)) %>%
     mutate(START=ifelse(START>END, 0, START)) %>%
     dplyr::select(CHROM=CHR, s=START, e=END, TIME)
-
+  
   reptime <- bedr.sort.region(reptime,
-    check.chr=FALSE,
-    check.merge=FALSE,
-    check.zero.based=FALSE,
-    check.valid=FALSE,
-    verbose=FALSE)
-
+                              check.chr=FALSE,
+                              check.merge=FALSE,
+                              check.zero.based=FALSE,
+                              check.valid=FALSE,
+                              verbose=FALSE)
+  
   site_ranges <- sites %>%
     mutate(CHR=paste0("chr", CHR), START=POS-1, END=POS) %>%
     dplyr::select(CHR, START, END)
-
+  
   site_ranges <- bedr.sort.region(site_ranges,
-    check.chr=FALSE,
-    check.merge=FALSE,
-    check.zero.based=FALSE,
-    check.valid=FALSE,
-    verbose=FALSE)
+                                  check.chr=FALSE,
+                                  check.merge=FALSE,
+                                  check.zero.based=FALSE,
+                                  check.valid=FALSE,
+                                  verbose=FALSE)
   tmp <- bedr.join.region(site_ranges, reptime,
-      check.chr=FALSE,
-      check.merge=FALSE,
-      check.zero.based=FALSE,
-      check.sort=FALSE,
-      check.valid=FALSE,
-      verbose=FALSE) %>%
+                          check.chr=FALSE,
+                          check.merge=FALSE,
+                          check.zero.based=FALSE,
+                          check.sort=FALSE,
+                          check.valid=FALSE,
+                          verbose=FALSE) %>%
     dplyr::select(CHR, POS=END, TIME) %>%
     mutate(CHR=as.numeric(gsub("chr", "", CHR)),
-      TIME=as.numeric(TIME)) %>%
+           TIME=as.numeric(TIME)) %>%
     arrange(CHR, POS)
-
+  
   return(tmp$TIME)
-
+  
   # feat_ranges <- GRanges(seqnames=paste0("chr",reptime2$CHR),
   #                        ranges=IRanges(start=reptime2$START, end=reptime2$END),
-	# 											 id=reptime2$TIME)
+  # 											 id=reptime2$TIME)
   # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
   #                        ranges=IRanges(start=sites$POS, end=sites$POS))
   #
@@ -181,7 +181,7 @@ repCol <- function(sites, repfile){
 binaryCol <- function(sites, bedfile){
   feat_ranges <- bed_to_granges(bedfile, hd=F)
   site_ranges <- GenomicRanges::GRanges(seqnames=paste0("chr",sites$CHR),
-                         ranges=IRanges::IRanges(start=sites$POS, end=sites$POS))
+                                        ranges=IRanges::IRanges(start=sites$POS, end=sites$POS))
   out <- GenomicRanges::findOverlaps(site_ranges, feat_ranges, type="within", select="first")
   out[is.na(out)] <- 0
   return(as.integer(as.logical(out)))
@@ -193,22 +193,22 @@ binaryCol <- function(sites, bedfile){
 #' @export
 ##############################################################################
 gcCol <- function(sites, gcfile){
-
+  
   gcbins <- read.table(gcfile, header=F, stringsAsFactors=F)[,1:4]
   names(gcbins) <- c("CHR", "start", "end", "prop_GC")
   gcbins$CHR <- as.character(gcbins$CHR)
   site_tmp <- sites %>%
     dplyr::select(CHR, POS) %>%
     mutate(start=floor(POS/10000)*10000, end=ceiling(POS/10000)*10000)
-
+  
   out1 <- merge(site_tmp, gcbins, by=c("CHR", "start")) %>%
     arrange(CHR, POS)
   # out2 <- merge(site_tmp, gcbins, by=c(CHR, end))
   return(out1$prop_GC)
-
+  
   # feat_ranges <- GRanges(seqnames=paste0("chr",gcbins$CHR),
   #                        ranges=IRanges(start=gcbins$start, end=gcbins$end),
-	# 											 id=gcbins$prop_GC)
+  # 											 id=gcbins$prop_GC)
   # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
   #                        ranges=IRanges(start=sites$POS, end=sites$POS))
   #
