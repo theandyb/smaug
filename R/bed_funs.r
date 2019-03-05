@@ -1,4 +1,3 @@
-##############################################################################
 #' BED to GRanges
 #'
 #' This function loads a BED-like file and stores it as a GRanges object.
@@ -10,13 +9,14 @@
 #' (https://github.com/davetang/bedr), with added support for bed files with headers
 #'
 #' @param file Location of your file
-#' @param header logical; indicates whether or not bed file has a header
+#' @param hd logical; indicates whether or not bed file has a header
 #' @keywords BED GRanges
+#' @importFrom GenomicRanges GRanges
+#' @importFrom IRanges IRanges
+#' @importFrom utils read.table
 #' @export
 #' @examples
-#' bed_to_granges('my_bed_file.bed')
-##############################################################################
-
+#' \dontrun{bed_to_granges('my_bed_file.bed')}
 bed_to_granges <- function(file, hd=FALSE){
   df <- read.table(file,
                    header=hd,
@@ -38,22 +38,26 @@ bed_to_granges <- function(file, hd=FALSE){
   }
   
   if(length(df)==3){
-    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end)))
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges(start, end)))
   } else if (length(df)==4){
-    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id))
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges(start, end), id=id))
   } else if (length(df)==5){
-    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score))
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges(start, end), id=id, score=score))
   } else if (length(df)==6){
-    gr <- with(df, GenomicRanges::GRanges(chr, IRanges::IRanges(start, end), id=id, score=score, strand=strand))
+    gr <- with(df, GenomicRanges::GRanges(chr, IRanges(start, end), id=id, score=score, strand=strand))
   }
   return(gr)
 }
 
 
-##############################################################################
-# Get recombination rate at each site
+#' Get recombination rate at each site
+#' @param sites A dataframe with 10 columns (CHR, POS, Sequence, Dummy Variables for the 6 mutation types, and read depth)
+#' @param rcrfile Path to file containing recombination rates
+#' @importFrom bedr bedr.sort.region bedr.join.region
+#' @importFrom dplyr select mutate arrange
+#' @import magrittr
+#' @return Vector containing recombination rates in order matching input dataset
 #' @export
-##############################################################################
 rcrCol <- function(sites, rcrfile){
   rcr <- read.table(rcrfile, header=T, stringsAsFactors=F)
   names(rcr) <- c("CHROM", "s", "e", "rate")
@@ -88,35 +92,22 @@ rcrCol <- function(sites, rcrfile){
     arrange(CHR, POS)
   
   return(tmp$rate)
-  
-  # feat_ranges <- bed_to_granges(file, header=T)
-  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
-  #
-  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  # indices[is.na(indices)] <- 0
-  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
-  #
-  # feat_df <- as.data.frame(feat_ranges)
-  # feat_df$indices <- seq_along(1:nrow(feat_df))
-  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
-  #   arrange(CHR, POS)
-  #
-  # rates <- rate_table$id
-  # # rates[is.na(rates)]<-0
-  # return(as.numeric(rates))
 }
 
-##############################################################################
-# Get replication timing rate for each site
+#' Get replication timing rate for each site
+#' @param sites A dataframe with 10 columns (CHR, POS, Sequence, Dummy Variables for the 6 mutation types, and read depth)
+#' @param repfile Path to file containing replication timing
+#' @import magrittr
+#' @return Vector with replication timing to be appended as column to input data.frame
+#' @importFrom bedr bedr.sort.region bedr.join.region
+#' @importFrom dplyr select mutate arrange filter
+#' @importFrom utils read.table
 #' @export
-##############################################################################
 repCol <- function(sites, repfile){
   reptime <- read.table(repfile, header=F, stringsAsFactors=F, sep="\t")
   names(reptime) <- c("CHR", "END", "TIME")
   reptime <- reptime[!duplicated(reptime[,1:2]),] %>%
     filter(CHR<=22) %>%
-    # group_by(CHR) %>%
     arrange(CHR, END) %>%
     mutate(CHR=paste0("chr", CHR), START=imputeStart(END)) %>%
     mutate(START=ifelse(START>END, 0, START)) %>%
@@ -152,46 +143,32 @@ repCol <- function(sites, repfile){
     arrange(CHR, POS)
   
   return(tmp$TIME)
-  
-  # feat_ranges <- GRanges(seqnames=paste0("chr",reptime2$CHR),
-  #                        ranges=IRanges(start=reptime2$START, end=reptime2$END),
-  # 											 id=reptime2$TIME)
-  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
-  #
-  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  # indices[is.na(indices)] <- 0
-  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
-  #
-  # feat_df <- as.data.frame(feat_ranges)
-  # feat_df$indices <- seq_along(1:nrow(feat_df))
-  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
-  #   arrange(CHR, POS)
-  #
-  # rates <- rate_table$id
-  # rates[is.na(rates)] <- 0
-  # return(as.numeric(rates))
-  # return(as.integer(site_ranges %within% feat_ranges))
 }
 
-##############################################################################
-# Check if site in bed file; returns 0 or 1
+#' Check if site in bed file; returns 0 or 1
+#' @param sites A dataframe with 10 columns (CHR, POS, Sequence, Dummy Variables for the 6 mutation types, and read depth)
+#' @param bedfile Path to bedfile
+#' @return Vector with binary indicators to be appended as column to input data.frame
+#' @importFrom GenomicRanges GRanges findOverlaps
+#' @importFrom IRanges IRanges
 #' @export
-##############################################################################
 binaryCol <- function(sites, bedfile){
   feat_ranges <- bed_to_granges(bedfile, hd=F)
-  site_ranges <- GenomicRanges::GRanges(seqnames=paste0("chr",sites$CHR),
-                                        ranges=IRanges::IRanges(start=sites$POS, end=sites$POS))
-  out <- GenomicRanges::findOverlaps(site_ranges, feat_ranges, type="within", select="first")
+  site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
+                                        ranges=IRanges(start=sites$POS, end=sites$POS))
+  out <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
   out[is.na(out)] <- 0
   return(as.integer(as.logical(out)))
-  # return(as.integer(site_ranges %within% feat_ranges))
 }
 
-##############################################################################
-# Get GC content in 10kb window (fix to sliding?)
+#' Get GC content in 10kb window
+#' @param sites A dataframe with 10 columns (CHR, POS, Sequence, Dummy Variables for the 6 mutation types, and read depth)
+#' @param gcfile Path to file containing percent gc content
+#' @return Vector with gc content to be appended as column to input data.frame
+#' @importFrom utils read.table
+#' @import magrittr
+#' @importFrom dplyr select mutate arrange
 #' @export
-##############################################################################
 gcCol <- function(sites, gcfile){
   
   gcbins <- read.table(gcfile, header=F, stringsAsFactors=F)[,1:4]
@@ -203,34 +180,13 @@ gcCol <- function(sites, gcfile){
   
   out1 <- merge(site_tmp, gcbins, by=c("CHR", "start")) %>%
     arrange(CHR, POS)
-  # out2 <- merge(site_tmp, gcbins, by=c(CHR, end))
   return(out1$prop_GC)
-  
-  # feat_ranges <- GRanges(seqnames=paste0("chr",gcbins$CHR),
-  #                        ranges=IRanges(start=gcbins$start, end=gcbins$end),
-  # 											 id=gcbins$prop_GC)
-  # site_ranges <- GRanges(seqnames=paste0("chr",sites$CHR),
-  #                        ranges=IRanges(start=sites$POS, end=sites$POS))
-  #
-  # indices <- findOverlaps(site_ranges, feat_ranges, type="within", select="first")
-  # indices[is.na(indices)]<-0
-  # ind_df <- data.frame(POS=sites$POS, CHR=sites$CHR, indices)
-  #
-  # feat_df <- as.data.frame(feat_ranges)
-  # feat_df$indices <- seq_along(1:nrow(feat_df))
-  # rate_table <- merge(ind_df, feat_df, by="indices", all.x=T, incomparables=0) %>%
-  #   arrange(CHR, POS)
-  #
-  # rates <- rate_table$id
-  # rates[is.na(rates)] <- 0
-  # return(as.numeric(rates))
-  # return(as.integer(site_ranges %within% feat_ranges))
 }
 
-##############################################################################
-# Function determines start of interval from value in previous row
+#' Function determines start of interval from value in previous row
+#' @param ends vector containing positions
+#' @return Vector of starting positions
 #' @export
-##############################################################################
 imputeStart <- function(ends){
   starts<-c(0, ends[-(length(ends))])
   return(starts)
