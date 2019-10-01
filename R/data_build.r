@@ -30,7 +30,7 @@ getData <- function(summfile, singfile, bindir, maskfile, binw){
     cat("Annotating with sample ID...\n")
     inds <- read_tsv(singfile)
     names(inds) <- c("CHR", "POS", "S", "ALT", "ID")
-    sites <- merge(sites, inds, by=c("CHR", "POS", "ALT"))
+    sites <- dplyr::inner_join(sites, inds, by=c("CHR", "POS", "ALT"))
     rm(inds)
   } else {
     cat("No ID file specified! Downstream scripts may fail.\n")
@@ -116,7 +116,7 @@ get_aggseq <- function(data, mct){
   	group_by(Motif, Category2, BIN) %>%
   	summarise(n=n()) %>%
   	summarise(nERVs=sum(n))
-  out <- merge(out, mct, by="Motif")
+  out <- dplyr::inner_join(out, mct, by="Motif")
   out$rel_prop <- out$nERVs/out$nMotifs
   return(out)
 }
