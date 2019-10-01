@@ -19,7 +19,7 @@ get_bins
 Helper function for getData
 }
 \examples{
-get_bins("/path/to/motif_counts", "motifs.txt")
+\dontrun{get_bins("/path/to/motif_counts", "motifs.txt")}
 }
 \author{
 Jed Carlson

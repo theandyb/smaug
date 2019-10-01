@@ -1,18 +1,16 @@
-##############################################################################
-# Function gets basic summary data from input directory
-#' getData
-#' prepare input data for downstream processing
-#'
+#' Function gets basic summary data from input directory
 #' @title getData
 #' @param summfile input file containing list of sites
 #' @param singfile file containing sites annotated with sample ID
 #' @param bindir directory containing the motif counts
+#' @param maskfile Path to genome mask file (BED format)
+#' @param binw Binwidth
 #' @return a list of four components: sites, bins, mct, & aggseq
+#' @importFrom readr read_tsv
 #' @export
 #' @examples
-#' getdata("sites.txt", "sites_id.txt", "/path/to/motif_counts")
+#' \dontrun{("sites.txt", "sites_id.txt", "/path/to/motif_counts")}
 #' @author Jed Carlson
-##############################################################################
 getData <- function(summfile, singfile, bindir, maskfile, binw){
 
   if(!file.exists(summfile)){
@@ -53,7 +51,6 @@ getData <- function(summfile, singfile, bindir, maskfile, binw){
   return(out)
 }
 
-##############################################################################
 # Function gets basic summary data from input directory
 #' get_bins
 #' Helper function for getData
@@ -64,9 +61,8 @@ getData <- function(summfile, singfile, bindir, maskfile, binw){
 #' @return concatenates files into a single data frame
 #' @export
 #' @examples
-#' get_bins("/path/to/motif_counts", "motifs.txt")
+#' \dontrun{get_bins("/path/to/motif_counts", "motifs.txt")}
 #' @author Jed Carlson
-##############################################################################
 get_bins <- function(bindir, pattern){
   files <- list.files(path=bindir, pattern=pattern, full.names=T)
   if(length(files)!=22){
@@ -81,30 +77,26 @@ get_bins <- function(bindir, pattern){
   return(out)
 }
 
-##############################################################################
 # Function gets basic summary data from input directory
 #' get_mct
 #' Helper function for getData
 #'
 #' @title get_mct
-#' @param bins
-#' @param pattern string or regular expression to match input files in bindir
+#' @param bins bins object from getData
 #' @return counts total number of motifs in bin directory
+#' @import magrittr
+#' @importFrom dplyr summarise group_by
 #' @export
 #' @examples
-#' get_bins(bins)
+#' \dontrun{get_bins(bins)}
 #' @author Jed Carlson
-##############################################################################
 get_mct <- function(bins){
   out <- bins %>%
-  	# dplyr::select(CHR, BIN, Sequence=MOTIF, nMotifs=COUNT) %>%
-  	# dplyr::select(CHR, Motif, nMotifs=COUNT) %>%
   	group_by(Motif) %>%
   	summarise(nMotifs=sum(nMotifs))
   return(out)
 }
 
-##############################################################################
 # Function gets basic summary data from input directory
 #' get_aggseq
 #' Helper function for getData
@@ -113,11 +105,12 @@ get_mct <- function(bins){
 #' @param data directory containing the motif counts (assumed 1 per chromosome)
 #' @param mct string or regular expression to match input files in bindir
 #' @return calculates K-mer mutation rates from input data
+#' @import magrittr
+#' @importFrom dplyr summarise group_by
 #' @export
 #' @examples
-#' get_aggseq(sites, mct)
+#' \dontrun{get_aggseq(sites, mct)}
 #' @author Jed Carlson
-##############################################################################
 get_aggseq <- function(data, mct){
   out <- data %>%
   	group_by(Motif, Category2, BIN) %>%

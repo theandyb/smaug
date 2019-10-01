@@ -1,14 +1,28 @@
 Package: smaug
-Title: Helper functions for the SMAUG pipeline
-Version: 0.0.0.1000
-Authors@R: person("Jedidiah", "Carlson", , "jed.e.carlson@gmail.com", role = c("aut", "cre"))
-Description: Suite of functions used for singleton mutation analysis
-Depends: R (>= 3.1.2)
-License: Free
-LazyData: true
-biocViews:
-Imports:
-    tidyverse,
-    RColorBrewer,
-    GenomicRanges
-RoxygenNote: 6.0.1
+Type: Package
+Title: smaug helper functions
+Version: 1.0
+Date: 2019-03-04
+Authors@R: c(
+    person("Carlson", "Jedidiah", role = c("aut")),
+    person("Andy", "Beck" , , "beckandy@umich.edu", role = c("ctb","cre"))
+  )
+Description: Helper functions for evaluating the germline mutation rate using extremely rare variants.
+License: GPL-3
+Imports: 
+  GenomicRanges, 
+  RColorBrewer,
+  IRanges,
+  utils,
+  bedr,
+  dplyr,
+  magrittr,
+  readr,
+  tidyr,
+  ggplot2,
+  MASS,
+  stats,
+  grid
+Suggests: 
+    testthat
+RoxygenNote: 6.1.1

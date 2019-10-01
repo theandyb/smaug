@@ -4,12 +4,12 @@
 \alias{bed_to_granges}
 \title{BED to GRanges}
 \usage{
-bed_to_granges(file, header)
+bed_to_granges(file, hd = FALSE)
 }
 \arguments{
 \item{file}{Location of your file}
 
-\item{header}{logical; indicates whether or not bed file has a header}
+\item{hd}{logical; indicates whether or not bed file has a header}
 }
 \description{
 This function loads a BED-like file and stores it as a GRanges object.
@@ -22,7 +22,7 @@ This is a forked version of the function written by Dave Tang
 (https://github.com/davetang/bedr), with added support for bed files with headers
 }
 \examples{
-bed_to_granges('my_bed_file.bed')
+\dontrun{bed_to_granges('my_bed_file.bed')}
 }
 \keyword{BED}
 \keyword{GRanges}

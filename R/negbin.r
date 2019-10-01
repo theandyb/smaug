@@ -1,14 +1,25 @@
 ##############################################################################
 # Negbin model processing functions
 ##############################################################################
-# Run negbin model for each formula specified in formlist
+
+#' Run negbin model for each formula specified in formlist
+#' @param formlist List of formula objects
+#' @param data Data on which you wish to run the model(s)
+#' @return List of model objects returned by glm.nb
+#' @importFrom MASS glm.nb
+#' @export
 runMod <- function(formlist, data){
 	out <- lapply(formlist, function(x) glm.nb(x, data))
 	names(out) <- names(formlist)
 	return(out)
 }
 
-# Build list of fitted values (with CHR/BIN names) for each model
+#' Build list of fitted values (with CHR/BIN names) for each model
+#' @param modlist list containing model objects
+#' @param data Data to be fitted
+#' @importFrom stats fitted.values
+#' @return list of fitted values
+#' @export
 getFits <- function(modlist, data){
 	out <- lapply(modlist,
 		function(x){
@@ -20,7 +31,11 @@ getFits <- function(modlist, data){
 	return(out)
 }
 
-# Build list of dataframes for each model
+#' Build list of dataframes for each model
+#' @param fitlist list containing fitted values
+#' @param data Data to be fitted
+#' @return list of fitted values
+#' @export
 buildDF <- function(fitlist, data){
 	out <- lapply(fitlist,
 		function(x){
@@ -35,9 +50,11 @@ buildDF <- function(fitlist, data){
 	return(out)
 }
 
-##############################################################################
-# Compute standard error for correlations
-##############################################################################
+#' Compute standard error for correlations
+#' @param corval correlation
+#' @param ct count?
+#' @return list of fitted values
+#' @export
 corSE <- function(corval, ct){
 	sqrt((1-corval^2)/(ct-2))
 }

@@ -7,7 +7,7 @@
 get_mct(bins)
 }
 \arguments{
-\item{pattern}{string or regular expression to match input files in bindir}
+\item{bins}{bins object from getData}
 }
 \value{
 counts total number of motifs in bin directory
@@ -17,7 +17,7 @@ get_mct
 Helper function for getData
 }
 \examples{
-get_bins(bins)
+\dontrun{get_bins(bins)}
 }
 \author{
 Jed Carlson

@@ -1,5 +1,9 @@
-## smaug
+# smaug
 
-[![Build Status](https://travis-ci.org/carjed/smaug.svg?branch=master)](https://travis-ci.org/carjed/smaug)
+Helper functions for the evaluation of mutation rate heterogeneity using extremely rare variants.
 
-a custom R package for use with the [smaug-genetics](https://github.com/carjed/smaug-genetics) project
+## Installation Instructions 
+
+```r
+remotes::install_github('rstudio/rmarkdown')
+```

@@ -1,11 +1,14 @@
-##############################################################################
-# Function for plotting K-mer heatmaps
+#' Function for plotting K-mer heatmaps
+#' @param dat Data to be plotted
+#' @param adj How many adjacent bases?
+#' @return ggplot2 object with heatmap
+#' @import ggplot2
+#' @import magrittr
+#' @importFrom dplyr mutate
 #' @export
-##############################################################################
 rrheat2 <- function(dat, adj){
 
   plotdat <- dat %>%
-  # plotdat <- gpdat[gpdat$Category==categ,] %>%
     mutate(v2=substr(Motif,1,adj),
       v2a=factor(as.character(lapply(as.vector(v2), reverse_chars))),
       v3=substr(Motif, adj+2, adj*2+1),
@@ -25,19 +28,13 @@ rrheat2 <- function(dat, adj){
 		reverse_chars))
 
 	p <- ggplot()+
-	# log(v4*10000+1,2)
-	# limits=c(min(dat$v4), max(dat$v4))
 	geom_tile(data=plotdat, aes(x=v3, y=v2a, fill=v4))+
-	# geom_text(data=dat, aes(x=v2a, y=v3, label=v4a, family="Courier", size=0.1))+
 	geom_rect(data=f, size=0.6, colour="grey70",
 		aes(xmin=xlo, xmax=xhi, ymin=ylo, ymax=yhi), fill=NA)+
 	scale_fill_gradientn("Relative Rate",
-		# colours=myPalette((nbp-1)^4),
     colours=myPaletteO(11),
 		trans="log10",
-		# breaks=10^(seq(-3.65,-.84,0.281)),
     breaks=0.0003*2^(0:9),
-		# labels=signif(10^(seq(-3.65,-.84,0.281)), 2),
     labels=0.0003*2^(0:9),
 		limits=c(0.0002, 0.2))+
 	xlab("3' flank")+
@@ -58,10 +55,11 @@ rrheat2 <- function(dat, adj){
 	return(p)
 }
 
-##############################################################################
-# Plot relative differences between ERVs and AV rates
+#' Plot relative differences between ERVs and AV rates
+#' @param dat Data to be plotted
+#' @return ggplot2 object with heatmap
+#' @import ggplot2
 #' @export
-##############################################################################
 rrheat3 <- function(dat){
 	p<-ggplot()+
 	geom_tile(data=dat, aes(x=v3, y=v2a, fill=prop_diff4))+
@@ -87,11 +85,14 @@ rrheat3 <- function(dat){
 	return(p)
 }
 
-
-##############################################################################
-# Display plot with inset
+#' Display plot with inset
+#' @param main ggplot2 object to be displayed
+#' @param inset How many adjacent bases?
+#' @param loc Where to place inset
+#' @import ggplot2
+#' @import magrittr
+#' @importFrom dplyr mutate
 #' @export
-##############################################################################
 insetPlot <- function(main, inset, loc) {
 	 print(main)
 	 theme_set(theme_bw(base_size = 4))
@@ -99,20 +100,18 @@ insetPlot <- function(main, inset, loc) {
 	 theme_set(theme_bw())
  }
 
- ##############################################################################
- # Multiple plot function
- #
- # ggplot objects passed in ..., or to plotlist (as list of ggplot objects)
- # - cols:   Number of columns in layout
- # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
- #
- # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
- # then plot 1 will go in the upper left, 2 will go in the upper right, and
- # 3 will go all the way across the bottom.
- #' @export
- ##############################################################################
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-   library(grid)
+#' Multiple plot function
+#'
+#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+#' then plot 1 will go in the upper left, 2 will go in the upper right, and
+#' 3 will go all the way across the bottom.
+#' @param ... ggplot objects passed in ..., or to plotlist (as list of ggplot objects)
+#' @param plotlist List of plots to use (in lieu of above ggplot objects)
+#' @param cols Number of columns in layout
+#' @param layout A matrix specifying the layout. If present, 'cols' is ignored.
+#' @importFrom grid viewport pushViewport grid.newpage grid.layout
+#' @export
+multiplot <- function(..., plotlist=NULL, cols=1, layout=NULL) {
 
    # Make a list from the ... arguments and plotlist
    plots <- c(list(...), plotlist)

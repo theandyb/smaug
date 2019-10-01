@@ -4,7 +4,7 @@
 \alias{getData}
 \title{getData}
 \usage{
-getData(summfile, singfile, bindir)
+getData(summfile, singfile, bindir, maskfile, binw)
 }
 \arguments{
 \item{summfile}{input file containing list of sites}
@@ -12,16 +12,19 @@ getData(summfile, singfile, bindir)
 \item{singfile}{file containing sites annotated with sample ID}
 
 \item{bindir}{directory containing the motif counts}
+
+\item{maskfile}{Path to genome mask file (BED format)}
+
+\item{binw}{Binwidth}
 }
 \value{
 a list of four components: sites, bins, mct, & aggseq
 }
 \description{
-getData
-prepare input data for downstream processing
+Function gets basic summary data from input directory
 }
 \examples{
-getdata("sites.txt", "sites_id.txt", "/path/to/motif_counts")
+\dontrun{("sites.txt", "sites_id.txt", "/path/to/motif_counts")}
 }
 \author{
 Jed Carlson

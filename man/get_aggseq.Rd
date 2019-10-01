@@ -19,7 +19,7 @@ get_aggseq
 Helper function for getData
 }
 \examples{
-get_aggseq(sites, mct)
+\dontrun{get_aggseq(sites, mct)}
 }
 \author{
 Jed Carlson
