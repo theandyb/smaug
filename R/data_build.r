@@ -33,6 +33,7 @@ getData <- function(summfile, singfile, bindir, maskfile, binw){
     inds <- read_tsv(singfile)
     names(inds) <- c("CHR", "POS", "S", "ALT", "ID")
     sites <- merge(sites, inds, by=c("CHR", "POS", "ALT"))
+    rm(inds)
   } else {
     cat("No ID file specified! Downstream scripts may fail.\n")
   }
