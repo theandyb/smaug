@@ -5,5 +5,5 @@ Helper functions for the evaluation of mutation rate heterogeneity using extreme
 ## Installation Instructions 
 
 ```r
-remotes::install_github('rstudio/rmarkdown')
+remotes::install_github('theandyb/smaug')
 ```
